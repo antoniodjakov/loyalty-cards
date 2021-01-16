@@ -1,53 +1,75 @@
 package mk.djakov.loyaltycards
 
 import android.os.Bundle
-import android.view.Menu
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.snackbar.Snackbar
-import com.google.android.material.navigation.NavigationView
-import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupActionBarWithNavController
-import androidx.navigation.ui.setupWithNavController
-import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.ScrollableColumn
+import androidx.compose.foundation.Text
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.setContent
+import androidx.compose.ui.res.imageResource
+import androidx.compose.ui.unit.dp
+import androidx.ui.tooling.preview.Preview
+import mk.djakov.loyaltycards.data.Card
+import mk.djakov.loyaltycards.ui.LoyaltyCardsTheme
 
 class MainActivity : AppCompatActivity() {
-
-    private lateinit var appBarConfiguration: AppBarConfiguration
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        val toolbar: Toolbar = findViewById(R.id.toolbar)
-        setSupportActionBar(toolbar)
-
-        val fab: FloatingActionButton = findViewById(R.id.fab)
-        fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show()
+        setContent {
+            LoyaltyCardsTheme {
+                // A surface container using the 'background' color from the theme
+                Surface(color = MaterialTheme.colors.background) {
+                    LoyaltyCards()
+                }
+            }
         }
-        val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
-        val navView: NavigationView = findViewById(R.id.nav_view)
-        val navController = findNavController(R.id.nav_host_fragment)
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
-        appBarConfiguration = AppBarConfiguration(setOf(
-                R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow), drawerLayout)
-        setupActionBarWithNavController(navController, appBarConfiguration)
-        navView.setupWithNavController(navController)
     }
+}
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(R.menu.main, menu)
-        return true
-    }
+@Preview(showBackground = true)
+@Composable
+fun DefaultPreview() {
+    LoyaltyCards()
+}
 
-    override fun onSupportNavigateUp(): Boolean {
-        val navController = findNavController(R.id.nav_host_fragment)
-        return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
+@Composable
+fun LoyaltyCards() {
+    ScrollableColumn() {
+        listOf(
+            Card("Ramstore", "123", ""),
+            Card("Vero", "123", ""),
+            Card("MakPetrol", "123", ""),
+            Card("Vero", "123", ""),
+            Card("Vero", "123", ""),
+            Card("Vero", "123", ""),
+            Card("Ramstore", "123", "")
+        ).forEach { card ->
+            androidx.compose.material.Card(
+                elevation = 12.dp,
+                modifier = Modifier.padding(8.dp)
+                    .clickable(onClick = {})
+                    .fillMaxWidth()
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Image(
+                        asset = imageResource(id = R.drawable.card_template),
+                        modifier = Modifier
+                            .preferredSize(80.dp, 80.dp)
+                            .padding(4.dp)
+                    )
+                    Column {
+                        Text(text = card.name, style = MaterialTheme.typography.h4)
+                        Text(text = card.barcode, style = MaterialTheme.typography.body2)
+                    }
+                }
+            }
+        }
     }
 }
