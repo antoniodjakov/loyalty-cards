@@ -2,22 +2,20 @@ package mk.djakov.loyaltycards
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.ScrollableColumn
-import androidx.compose.foundation.Text
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
+import androidx.compose.foundation.layout.ConstraintLayout
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.setContent
-import androidx.compose.ui.res.imageResource
-import androidx.compose.ui.unit.dp
 import androidx.ui.tooling.preview.Preview
-import mk.djakov.loyaltycards.data.Card
+import mk.djakov.loyaltycards.data.BottomBar
+import mk.djakov.loyaltycards.data.CardsList
+import mk.djakov.loyaltycards.data.FAB
+import mk.djakov.loyaltycards.data.TopBar
+import mk.djakov.loyaltycards.extensions.visible
 import mk.djakov.loyaltycards.ui.LoyaltyCardsTheme
+import mk.djakov.loyaltycards.util.Data
+import mk.djakov.loyaltycards.util.toast
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,50 +24,53 @@ class MainActivity : AppCompatActivity() {
             LoyaltyCardsTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(color = MaterialTheme.colors.background) {
-                    LoyaltyCards()
+                    HomeScreen()
                 }
             }
         }
     }
-}
 
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    LoyaltyCards()
-}
+    @Preview(showBackground = true)
+    @Composable
+    fun DefaultPreview() {
+        HomeScreen()
+    }
 
-@Composable
-fun LoyaltyCards() {
-    ScrollableColumn() {
-        listOf(
-            Card("Ramstore", "123", ""),
-            Card("Vero", "123", ""),
-            Card("MakPetrol", "123", ""),
-            Card("Vero", "123", ""),
-            Card("Vero", "123", ""),
-            Card("Vero", "123", ""),
-            Card("Ramstore", "123", "")
-        ).forEach { card ->
-            androidx.compose.material.Card(
-                elevation = 12.dp,
-                modifier = Modifier.padding(8.dp)
-                    .clickable(onClick = {})
-                    .fillMaxWidth()
-            ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Image(
-                        asset = imageResource(id = R.drawable.card_template),
-                        modifier = Modifier
-                            .preferredSize(80.dp, 80.dp)
-                            .padding(4.dp)
-                    )
-                    Column {
-                        Text(text = card.name, style = MaterialTheme.typography.h4)
-                        Text(text = card.barcode, style = MaterialTheme.typography.body2)
+    @Composable
+    fun HomeScreen() {
+        ConstraintLayout() {
+            val (body, progress) = createRefs()
+            Scaffold(
+                drawerContent = {
+                    (1..10).forEach {
+                        Text(text = "Row no.$it")
                     }
-                }
-            }
+                },
+                topBar = { TopBar() },
+                floatingActionButton = {
+                    FAB() {
+                        //onClick
+
+                    }
+                },
+                floatingActionButtonPosition = FabPosition.End,
+                isFloatingActionButtonDocked = true,
+                bodyContent = {
+                    CardsList(Data.cards) {
+                        //onClick()
+                        applicationContext.toast(it.name)
+                    }
+                },
+                bottomBar = { BottomBar() }
+            )
+            CircularProgressIndicator(
+                modifier = Modifier.constrainAs(progress) {
+                    top.linkTo(parent.top)
+                    bottom.linkTo(parent.bottom)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                }.visible(false)
+            )
         }
     }
 }
