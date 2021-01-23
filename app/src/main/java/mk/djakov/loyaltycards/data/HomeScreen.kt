@@ -21,7 +21,7 @@ import mk.djakov.loyaltycards.ui.MainViewModel
 import mk.djakov.loyaltycards.util.toast
 
 @Composable
-fun HomeScreen(context: Context, viewModel: MainViewModel) {
+fun HomeScreen(context: Context, viewModel: MainViewModel, onCardClick: (Card) -> Unit) {
     val (showDialog, setShowDialog) = remember { mutableStateOf(false) }
     val isLoading: Boolean by viewModel.isLoading.observeAsState(true)
     Column(
@@ -55,6 +55,7 @@ fun HomeScreen(context: Context, viewModel: MainViewModel) {
                     CardsList(viewModel = viewModel) {
                         //onClick()
                         context.toast(it.name)
+                        onCardClick(it)
                     }
                 },
                 bottomBar = { BottomBar() }
@@ -68,6 +69,6 @@ fun HomeScreen(context: Context, viewModel: MainViewModel) {
                 }.visible(isLoading)
             )
         }
-        InsertCard(showDialog = showDialog, setShowDialog = setShowDialog)
+        InsertCard(viewModel = viewModel, showDialog = showDialog, setShowDialog = setShowDialog)
     }
 }

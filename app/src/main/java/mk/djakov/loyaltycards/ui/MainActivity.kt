@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.setContent
 import androidx.ui.tooling.preview.Preview
 import dagger.hilt.android.AndroidEntryPoint
+import mk.djakov.loyaltycards.data.CardDetails
 import mk.djakov.loyaltycards.data.HomeScreen
 
 @AndroidEntryPoint
@@ -22,7 +23,10 @@ class MainActivity : AppCompatActivity() {
             LoyaltyCardsTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(color = MaterialTheme.colors.background) {
-                    HomeScreen(applicationContext, viewModel)
+                    HomeScreen(applicationContext, viewModel) {
+                        // onCardClick
+                        //TODO display card details
+                    }
                 }
             }
         }
@@ -31,7 +35,9 @@ class MainActivity : AppCompatActivity() {
     @Preview(showBackground = true)
     @Composable
     fun DefaultPreview() {
-        HomeScreen(applicationContext, viewModel)
+        HomeScreen(applicationContext, viewModel) {
+
+        }
     }
 
 }

@@ -14,10 +14,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
-import androidx.ui.tooling.preview.Preview
+import mk.djakov.loyaltycards.ui.MainViewModel
 
 @Composable
-fun InsertCard(showDialog: Boolean, setShowDialog: (Boolean) -> Unit) {
+fun InsertCard(viewModel: MainViewModel, showDialog: Boolean, setShowDialog: (Boolean) -> Unit) {
+    var nameValue by savedInstanceState(saver = TextFieldValue.Saver) { TextFieldValue() }
+    var barcodeValue by savedInstanceState(saver = TextFieldValue.Saver) { TextFieldValue() }
+    var ownerValue by savedInstanceState(saver = TextFieldValue.Saver) { TextFieldValue() }
+
     if (showDialog) {
         AlertDialog(
             onDismissRequest = {},
@@ -27,6 +31,7 @@ fun InsertCard(showDialog: Boolean, setShowDialog: (Boolean) -> Unit) {
             confirmButton = {
                 Button(
                     onClick = {
+                        viewModel.insertCard(nameValue.text, barcodeValue.text, ownerValue.text)
                         // Change the state to close the dialog
                         setShowDialog(false)
                     },
@@ -45,56 +50,43 @@ fun InsertCard(showDialog: Boolean, setShowDialog: (Boolean) -> Unit) {
                 }
             },
             text = {
-                InsertCardBody()
+                Column(
+                    Modifier
+                        .padding(8.dp)
+                        .clickable(onClick = { })
+                        .fillMaxWidth()
+                ) {
+                    TextField(
+                        value = nameValue,
+                        onValueChange = { nameValue = it },
+                        placeholder = { Text("Label name") })
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.padding(top = 20.dp, bottom = 20.dp)
+                    ) {
+                        IconButton(
+                            modifier = Modifier.then(Modifier.preferredSize(48.dp)),
+                            onClick = { }) {
+                            Icon(
+                                Icons.Filled.QrCode,
+                                tint = Color.White
+                            )
+                        }
+                        TextField(
+                            value = barcodeValue,
+                            onValueChange = { barcodeValue = it },
+                            modifier = Modifier.padding(end = 10.dp),
+                            placeholder = { Text(text = "Barcode") }
+                        )
+
+                    }
+                    TextField(
+                        value = ownerValue,
+                        onValueChange = { ownerValue = it },
+                        placeholder = { Text(text = "Owner") })
+                }
             })
     }
 }
 
-@Composable
-fun InsertCardBody() {
-    var nameValue by savedInstanceState(saver = TextFieldValue.Saver) { TextFieldValue() }
-    var barcodeValue by savedInstanceState(saver = TextFieldValue.Saver) { TextFieldValue() }
-    var ownerValue by savedInstanceState(saver = TextFieldValue.Saver) { TextFieldValue() }
-
-    Column(
-        Modifier
-            .padding(8.dp)
-            .clickable(onClick = { })
-            .fillMaxWidth()
-    ) {
-        TextField(
-            value = nameValue,
-            onValueChange = { nameValue = it },
-            placeholder = { Text("Label name") })
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(top = 20.dp, bottom = 20.dp)
-        ) {
-            IconButton(
-                modifier = Modifier.then(Modifier.preferredSize(48.dp)),
-                onClick = { }) {
-                Icon(
-                    Icons.Filled.QrCode,
-                    tint = Color.White
-                )
-            }
-            TextField(
-                value = barcodeValue,
-                onValueChange = { barcodeValue = it },
-                modifier = Modifier.padding(end = 10.dp),
-                placeholder = { Text(text = "Barcode") }
-            )
-
-        }
-        TextField(
-            value = ownerValue,
-            onValueChange = { ownerValue = it },
-            placeholder = { Text(text = "Owner") })
-    }
-}
-
-@Preview
-@Composable
-fun previewAlert() {
-    InsertCard(true) {}
-}
+//TODO Add input fields validator
